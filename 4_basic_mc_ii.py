@@ -10,6 +10,7 @@ import numpy as np
 def generate_self_avoiding_walk(L):
     pos = (0, 0)
     s = [(0, 0)]
+    W = 1
     steps = [(1, 0), (-1, 0), (0, 1), (0, -1)]
     for _ in range(L):
         possible_steps = list(
@@ -21,9 +22,18 @@ def generate_self_avoiding_walk(L):
         # print(f"pos is {pos}")
         # print(f"steps are {possible_steps}")
         if possible_steps:
+            W *= len(possible_steps)
             pos = possible_steps[np.random.randint(len(possible_steps))]
         s.append(pos)
-    # print(s)
+    return (s, W)
 
 
 # Estimate c_N using importance sampling.
+def importance_estimator(L, trials):
+    sum_weights = 0
+    for _ in range(trials):
+        sum_weights += generate_self_avoiding_walk(L)[1]
+    return sum_weights / trials
+
+
+print(importance_estimator(10, 100000))
